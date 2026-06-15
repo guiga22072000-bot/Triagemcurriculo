@@ -1,0 +1,24 @@
+databases:
+  - name: cv-analyzer-db
+    plan: free
+    databaseName: cv_analyzer
+    user: cv_analyzer
+
+services:
+  - type: web
+    name: cv-analyzer
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cv-analyzer-db
+          property: connectionString
